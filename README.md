@@ -6,7 +6,7 @@ Let me introduce myself, I'm **Fazri Lukman Nurrohman**. On this occasion, I'd l
 
 ## 🚀 Live Demo
 
-**Website Link:** [https://www.eki.my.id/](https://www.eki.my.id/)
+**Website Link:** [https://www.fazrilukman.my.id/](https://www.fazrilukman.my.id/)
 
 ## 🛠️ Tech Stack
 
@@ -237,10 +237,10 @@ We would appreciate it if you decide to use this project. Please include proper 
 
 If you have any questions or need help with the setup, feel free to reach out\!
 
-**Eki Zulfar Rachman**
+**Fazri Lukman Nurrohman**
 
-  - Website: [https://www.eki.my.id/](https://www.eki.my.id/)
-  - GitHub: [EkiZR](https://github.com/EkiZR)
+  - Website: [https://www.fazrilukman.my.id/](https://www.fazrilukman.my.id/)
+  - GitHub: [Fazrilukman](https://github.com/fazrilukman)
 
 -----
 
