@@ -314,8 +314,8 @@ export default function FullWidthTabs() {
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
             {/* Category Filter */}
-            <div className="mb-8 flex justify-center" data-aos="fade-down" data-aos-duration="800">
-              <div className="inline-flex bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-2 gap-2">
+            <div className="mb-8 flex justify-center overflow-x-auto px-4 sm:px-0" data-aos="fade-down" data-aos-duration="800">
+              <div className="inline-flex bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-1.5 sm:p-2 gap-1 sm:gap-2 min-w-max">
                 {['Project', 'Design', 'Editing'].map((category) => (
                   <button
                     key={category}
@@ -324,7 +324,7 @@ export default function FullWidthTabs() {
                       setShowAllProjects(false); // Reset show all saat ganti kategori
                     }}
                     className={`
-                      px-8 py-3 rounded-xl font-semibold text-base transition-all duration-400
+                      px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-base transition-all duration-400 whitespace-nowrap
                       ${selectedCategory === category
                         ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
