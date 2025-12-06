@@ -35,18 +35,23 @@ export default function Lanyard() {
     return () => cancelAnimationFrame(animationFrame.current);
   }, [isDragging, velocity.x, velocity.y, position.x, position.y]);
 
-  const handleMouseDown = (e) => {
+  const handleStart = (e) => {
+    e.preventDefault();
     setIsDragging(true);
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     dragStart.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y
+      x: clientX - position.x,
+      y: clientY - position.y
     };
   };
 
-  const handleMouseMove = (e) => {
+  const handleMove = (e) => {
     if (isDragging) {
-      const newX = e.clientX - dragStart.current.x;
-      const newY = e.clientY - dragStart.current.y;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const newX = clientX - dragStart.current.x;
+      const newY = clientY - dragStart.current.y;
       
       setPosition({
         x: Math.max(-200, Math.min(200, newX)),
@@ -60,17 +65,21 @@ export default function Lanyard() {
     }
   };
 
-  const handleMouseUp = () => {
+  const handleEnd = () => {
     setIsDragging(false);
   };
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('touchend', handleEnd);
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('mouseup', handleEnd);
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('touchend', handleEnd);
       };
     }
   }, [isDragging, position]);
@@ -81,15 +90,19 @@ export default function Lanyard() {
 
   return (
     <div className="lanyard-wrapper" style={{ 
-      minHeight: '600px', 
+      minHeight: 'clamp(550px, 85vh, 700px)', 
       perspective: '1500px',
       position: 'relative',
-      overflow: 'visible'
+      overflow: 'visible',
+      marginTop: '0px',
+      paddingTop: '100px',
+      paddingBottom: '60px',
+      width: '100%'
     }}>
       {/* Lanyard String - More visible */}
       <svg className="lanyard-string" style={{ 
         position: 'absolute',
-        top: '-50px',
+        top: '10px',
         left: '50%',
         width: '400px',
         height: '400px',
@@ -118,9 +131,9 @@ export default function Lanyard() {
         />
         <defs>
           <linearGradient id="lanyardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.9" />
-            <stop offset="50%" stopColor="#8b5cf6" stopOpacity="1" />
-            <stop offset="100%" stopColor="#a855f7" stopOpacity="0.9" />
+            <stop offset="0%" stopColor="#dc2626" stopOpacity="0.9" />
+            <stop offset="50%" stopColor="#ef4444" stopOpacity="1" />
+            <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.9" />
           </linearGradient>
           <filter id="glow">
             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -135,7 +148,7 @@ export default function Lanyard() {
       {/* Attachment point at top */}
       <div style={{
         position: 'absolute',
-        top: '-50px',
+        top: '10px',
         left: '50%',
         transform: 'translateX(-50%)',
         width: '60px',
@@ -147,11 +160,62 @@ export default function Lanyard() {
         border: '2px solid rgba(255,255,255,0.1)'
       }} />
 
+      {/* 3D Depth Layers - Background shadows */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '100px',
+          left: '50%',
+          transform: `
+            translateX(-50%)
+            translate(${position.x * 0.95}px, ${position.y * 0.95}px)
+            rotateX(${rotateX * 0.9}deg)
+            rotateY(${rotateY * 0.9}deg)
+            rotateZ(${rotateZ * 0.9}deg)
+            translateZ(-20px)
+          `,
+          transformStyle: 'preserve-3d',
+          width: 'clamp(260px, 75vw, 320px)',
+          height: 'clamp(340px, 60vh, 440px)',
+          background: 'linear-gradient(145deg, rgba(220, 38, 38, 0.15), rgba(239, 68, 68, 0.1))',
+          borderRadius: '24px',
+          filter: 'blur(8px)',
+          zIndex: 4,
+          pointerEvents: 'none',
+          transition: isDragging ? 'none' : 'transform 0.05s ease-out'
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          top: '100px',
+          left: '50%',
+          transform: `
+            translateX(-50%)
+            translate(${position.x * 0.9}px, ${position.y * 0.9}px)
+            rotateX(${rotateX * 0.8}deg)
+            rotateY(${rotateY * 0.8}deg)
+            rotateZ(${rotateZ * 0.8}deg)
+            translateZ(-40px)
+          `,
+          transformStyle: 'preserve-3d',
+          width: 'clamp(260px, 75vw, 320px)',
+          height: 'clamp(340px, 60vh, 440px)',
+          background: 'linear-gradient(145deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.05))',
+          borderRadius: '24px',
+          filter: 'blur(12px)',
+          zIndex: 3,
+          pointerEvents: 'none',
+          transition: isDragging ? 'none' : 'transform 0.05s ease-out'
+        }}
+      />
+
       {/* Card */}
       <div
         ref={cardRef}
         className="lanyard-card"
-        onMouseDown={handleMouseDown}
+        onMouseDown={handleStart}
+        onTouchStart={handleStart}
         style={{
           transform: `
             translate(${position.x}px, ${position.y}px)
@@ -163,20 +227,23 @@ export default function Lanyard() {
           transition: isDragging ? 'none' : 'transform 0.05s ease-out',
           transformStyle: 'preserve-3d',
           position: 'relative',
-          top: '170px',
-          width: '300px',
-          height: '420px',
+          top: '100px',
+          width: 'clamp(260px, 75vw, 320px)',
+          height: 'clamp(340px, 60vh, 440px)',
           margin: '0 auto',
           background: 'linear-gradient(145deg, #0a0a15 0%, #1a1a2e 50%, #0f0f1e 100%)',
           borderRadius: '24px',
           boxShadow: `
-            0 30px 80px rgba(99, 102, 241, 0.4),
-            0 15px 40px rgba(139, 92, 246, 0.3),
+            0 40px 100px rgba(220, 38, 38, 0.5),
+            0 20px 50px rgba(239, 68, 68, 0.4),
+            0 10px 25px rgba(244, 63, 94, 0.3),
             0 0 0 1px rgba(255, 255, 255, 0.15),
-            inset 0 0 40px rgba(99, 102, 241, 0.15)
+            inset 0 0 40px rgba(220, 38, 38, 0.15),
+            inset 0 2px 4px rgba(255, 255, 255, 0.1)
           `,
           zIndex: 5,
-          border: '1px solid rgba(139, 92, 246, 0.2)'
+          border: '1px solid rgba(239, 68, 68, 0.2)',
+          filter: 'drop-shadow(0 0 30px rgba(220, 38, 38, 0.3))'
         }}
       >
         {/* Clip/Hook at top */}
@@ -208,15 +275,15 @@ export default function Lanyard() {
         </div>
 
         {/* Card Content */}
-        <div style={{ padding: '50px 35px 40px', position: 'relative', zIndex: 1 }}>
+        <div style={{ padding: 'clamp(30px, 8vw, 50px) clamp(20px, 6vw, 35px) 40px', position: 'relative', zIndex: 1 }}>
           {/* Top header bar - Larger */}
           <div style={{
             width: '100%',
-            height: '70px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            height: 'clamp(50px, 12vw, 70px)',
+            background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
             borderRadius: '12px',
             marginBottom: '24px',
-            boxShadow: '0 4px 20px rgba(99, 102, 241, 0.6), inset 0 1px 0 rgba(255,255,255,0.2)',
+            boxShadow: '0 4px 20px rgba(220, 38, 38, 0.6), inset 0 1px 0 rgba(255,255,255,0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -238,11 +305,11 @@ export default function Lanyard() {
           {/* Middle section - Profile/Info area */}
           <div style={{
             width: '92%',
-            height: '100px',
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+            height: 'clamp(80px, 15vw, 100px)',
+            background: 'linear-gradient(135deg, #ef4444 0%, #f43f5e 100%)',
             borderRadius: '12px',
             margin: '0 auto 24px',
-            boxShadow: '0 4px 16px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255,255,255,0.15)',
+            boxShadow: '0 4px 16px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.15)',
             position: 'relative',
             overflow: 'hidden'
           }}>
@@ -260,21 +327,21 @@ export default function Lanyard() {
           {/* Bottom bar - Footer */}
           <div style={{
             width: '85%',
-            height: '50px',
-            background: 'linear-gradient(135deg, #a855f7 0%, #c084fc 100%)',
+            height: 'clamp(40px, 8vw, 50px)',
+            background: 'linear-gradient(135deg, #f43f5e 0%, #fb7185 100%)',
             borderRadius: '12px',
             margin: '0 auto 16px',
-            boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)'
+            boxShadow: '0 4px 12px rgba(244, 63, 94, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)'
           }} />
           
           {/* Small accent bar at bottom */}
           <div style={{
             width: '70%',
-            height: '30px',
-            background: 'linear-gradient(135deg, #c084fc 0%, #e879f9 100%)',
+            height: 'clamp(25px, 5vw, 30px)',
+            background: 'linear-gradient(135deg, #fb7185 0%, #fda4af 100%)',
             borderRadius: '8px',
             margin: '0 auto',
-            boxShadow: '0 2px 8px rgba(192, 132, 252, 0.3)'
+            boxShadow: '0 2px 8px rgba(251, 113, 133, 0.3)'
           }} />
         </div>
 

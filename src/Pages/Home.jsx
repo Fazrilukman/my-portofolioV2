@@ -207,10 +207,10 @@ const Home = () => {
   }, [handleTyping]);
 
   return (
-    <div className="min-h-screen bg-[#030014] overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-28 sm:pt-0" id="Home">
+    <div className="min-h-screen bg-[#030014] overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-32 sm:pt-20 md:pt-0" id="Home">
       <div className={`relative z-10 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-        <div className="container mx-auto  min-h-screen ">
-          <div className="flex flex-col lg:flex-row items-center justify-center h-screen md:justify-between gap-0 sm:gap-12 lg:gap-20">
+        <div className="container mx-auto min-h-screen">
+          <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen md:justify-between gap-8 sm:gap-12 lg:gap-20">
             {/* Left Column */}
             <div className="w-full lg:w-1/2 space-y-6 sm:space-y-8 text-left lg:text-left order-1 lg:order-1 lg:mt-0"
               data-aos="fade-right"
@@ -256,12 +256,15 @@ const Home = () => {
             </div>
 
             {/* Right Column - Lanyard Card */}
-            <div className="w-full py-[10%] sm:py-0 lg:w-1/2 h-auto lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2 mt-8 lg:mt-0"
+            <div className="w-full py-0 sm:py-0 lg:w-1/2 h-auto lg:min-h-[750px] xl:min-h-[850px] relative flex items-center justify-center order-2 lg:order-2 mt-0 lg:mt-0"
               data-aos="fade-left"
-              data-aos-delay="600">
+              data-aos-delay="600"
+              style={{ overflow: 'visible', perspective: '2000px' }}>
               
               {/* Interactive Lanyard Card */}
-              <Lanyard />
+              <div style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                <Lanyard />
+              </div>
               
             </div>
           </div>
