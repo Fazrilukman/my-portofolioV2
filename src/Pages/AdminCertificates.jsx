@@ -99,6 +99,19 @@ const AdminCertificates = () => {
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `certificates/${fileName}`;
 
+      // Cek apakah bucket ada, jika tidak tampilkan pesan yang lebih jelas
+      const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+      
+      if (bucketError) {
+        console.error('Error checking buckets:', bucketError);
+      }
+
+      const bucketExists = buckets?.some(bucket => bucket.name === 'certificates');
+      
+      if (!bucketExists) {
+        throw new Error('Storage bucket "certificates" not found. Please create it in Supabase Dashboard:\n1. Go to Storage\n2. Create new bucket named "certificates"\n3. Make it public\n\nOr use URL method instead.');
+      }
+
       // Upload ke Supabase Storage
       const { data, error } = await supabase.storage
         .from('certificates')
@@ -139,7 +152,40 @@ const AdminCertificates = () => {
         if (!imageFile) {
           throw new Error('Please select an image file');
         }
-        finalImageUrl = await uploadImageToSupabase(imageFile);
+        
+        try {
+          finalImageUrl = await uploadImageToSupabase(imageFile);
+        } catch (uploadError) {
+          // Jika upload gagal karena bucket tidak ada, beri instruksi
+          const errorMessage = uploadError.message || '';
+          
+          if (errorMessage.includes('bucket') || errorMessage.includes('Bucket not found')) {
+            await Swal.fire({
+              icon: 'info',
+              title: 'Storage Bucket Not Found',
+              html: `
+                <div class="text-left">
+                  <p class="mb-3">The Supabase storage bucket needs to be created first.</p>
+                  <p class="font-bold mb-2">Steps to create bucket:</p>
+                  <ol class="list-decimal ml-5 space-y-1">
+                    <li>Go to your Supabase Dashboard</li>
+                    <li>Navigate to <strong>Storage</strong></li>
+                    <li>Click <strong>New Bucket</strong></li>
+                    <li>Name it: <code class="bg-gray-200 px-2 py-1 rounded">certificates</code></li>
+                    <li>Make it <strong>Public</strong></li>
+                    <li>Save and try again</li>
+                  </ol>
+                  <p class="mt-3 text-sm text-gray-600">Alternatively, you can use the URL method instead.</p>
+                </div>
+              `,
+              confirmButtonColor: '#ef4444'
+            });
+            setSubmitting(false);
+            return;
+          }
+          
+          throw uploadError;
+        }
       } else {
         // Jika pakai URL
         if (!imageUrl.trim()) {
@@ -350,9 +396,9 @@ const AdminCertificates = () => {
 
       {/* Add Certificate Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-[#140003] border border-white/10 rounded-xl w-full max-w-md">
-            <div className="flex items-center justify-between p-6 border-b border-white/10">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-[#140003] border border-white/10 rounded-xl w-full max-w-md my-8 max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
               <h2 className="text-2xl font-bold text-white">Add New Certificate</h2>
               <button
                 onClick={handleCloseModal}
@@ -362,7 +408,8 @@ const AdminCertificates = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+              <div className="p-6 space-y-4">
               {/* Upload Method Toggle */}
               <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
                 <button
@@ -458,7 +505,7 @@ const AdminCertificates = () => {
                   <img
                     src={uploadMethod === 'url' ? imageUrl : URL.createObjectURL(imageFile)}
                     alt="Certificate preview"
-                    className="w-full rounded-lg"
+                    className="w-full rounded-lg max-h-96 object-contain"
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'block';
@@ -472,8 +519,9 @@ const AdminCertificates = () => {
                   </p>
                 </div>
               )}
+              </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 p-6 border-t border-white/10 bg-[#140003] flex-shrink-0">
                 <button
                   type="button"
                   onClick={handleCloseModal}
