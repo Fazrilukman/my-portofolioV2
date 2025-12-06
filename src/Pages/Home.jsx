@@ -207,9 +207,9 @@ const Home = () => {
   }, [handleTyping]);
 
   return (
-    <div className="min-h-screen overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-20 md:pt-16 lg:pt-12" id="Home">
+    <div className="min-h-screen overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-28 md:pt-24 lg:pt-20" id="Home">
       <div className={`relative z-10 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-        <div className="container mx-auto  min-h-screen ">
+        <div className="container mx-auto min-h-screen ">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-start md:justify-between gap-10 sm:gap-12 lg:gap-20 min-h-[85vh]">
             {/* Left Column */}
             <div className="w-full lg:w-1/2 space-y-6 sm:space-y-8 text-left lg:text-left order-1 lg:order-1 lg:mt-0"
@@ -256,7 +256,7 @@ const Home = () => {
             </div>
 
             {/* Right Column - Lanyard Card */}
-            <div className="w-full max-w-[440px] lg:max-w-none mx-auto py-8 sm:py-10 lg:py-0 lg:w-1/2 h-auto lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2 mt-6 sm:mt-8 lg:mt-0"
+            <div className="w-full max-w-[440px] lg:max-w-none mx-auto py-12 sm:py-16 lg:py-0 lg:w-1/2 h-[500px] sm:h-[600px] lg:h-[650px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2 mt-8 sm:mt-10 lg:mt-0"
               data-aos="fade-left"
               data-aos-delay="600">
               
