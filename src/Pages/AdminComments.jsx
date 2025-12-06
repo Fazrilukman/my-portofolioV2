@@ -160,8 +160,8 @@ const AdminComments = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-blue-500/20 rounded-lg">
-                <MessageSquare className="w-6 h-6 text-blue-400" />
+              <div className="p-3 bg-red-500/20 rounded-lg">
+                <MessageSquare className="w-6 h-6 text-red-400" />
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Total Comments</p>
@@ -171,8 +171,8 @@ const AdminComments = () => {
           </div>
           <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl p-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-purple-500/20 rounded-lg">
-                <Pin className="w-6 h-6 text-purple-400" />
+              <div className="p-3 bg-rose-500/20 rounded-lg">
+                <Pin className="w-6 h-6 text-rose-400" />
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Pinned</p>
@@ -202,7 +202,7 @@ const AdminComments = () => {
               placeholder="Search by name or content..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
           <div className="flex gap-2">
@@ -210,7 +210,7 @@ const AdminComments = () => {
               onClick={() => setFilterType('all')}
               className={`px-4 py-2 rounded-lg transition-all ${
                 filterType === 'all'
-                  ? 'bg-indigo-600 text-white'
+                  ? 'bg-red-600 text-white'
                   : 'bg-white/5 text-gray-400 hover:bg-white/10'
               }`}
             >
@@ -220,7 +220,7 @@ const AdminComments = () => {
               onClick={() => setFilterType('pinned')}
               className={`px-4 py-2 rounded-lg transition-all ${
                 filterType === 'pinned'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-rose-600 text-white'
                   : 'bg-white/5 text-gray-400 hover:bg-white/10'
               }`}
             >
@@ -243,7 +243,7 @@ const AdminComments = () => {
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
-              <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4" />
+              <div className="w-16 h-16 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
               <p className="text-gray-400">Loading comments...</p>
             </div>
           </div>
@@ -262,7 +262,7 @@ const AdminComments = () => {
                 key={comment.id}
                 className={`bg-white/5 backdrop-blur-lg border rounded-xl p-6 hover:bg-white/10 transition-all ${
                   comment.is_pinned
-                    ? 'border-purple-500/30 bg-gradient-to-r from-purple-500/5 to-indigo-500/5'
+                    ? 'border-rose-500/30 bg-gradient-to-r from-rose-500/5 to-red-500/5'
                     : 'border-white/10'
                 }`}
               >
@@ -273,11 +273,11 @@ const AdminComments = () => {
                       <img
                         src={comment.profile_image}
                         alt={comment.user_name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-red-500/30"
                       />
                     ) : (
-                      <div className="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center">
-                        <UserCircle2 className="w-7 h-7 text-indigo-400" />
+                      <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+                        <UserCircle2 className="w-7 h-7 text-red-400" />
                       </div>
                     )}
                   </div>
@@ -289,7 +289,7 @@ const AdminComments = () => {
                         <h4 className="font-semibold text-white flex items-center gap-2">
                           {comment.user_name}
                           {comment.is_pinned && (
-                            <span className="px-2 py-0.5 text-xs bg-purple-500/20 text-purple-300 rounded-full">
+                            <span className="px-2 py-0.5 text-xs bg-rose-500/20 text-rose-300 rounded-full">
                               Pinned
                             </span>
                           )}
@@ -305,8 +305,8 @@ const AdminComments = () => {
                         onClick={() => handleTogglePin(comment)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sm ${
                           comment.is_pinned
-                            ? 'bg-purple-500/20 hover:bg-purple-500/30 text-purple-300'
-                            : 'bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300'
+                            ? 'bg-rose-500/20 hover:bg-rose-500/30 text-rose-300'
+                            : 'bg-red-500/20 hover:bg-red-500/30 text-red-300'
                         }`}
                       >
                         {comment.is_pinned ? (

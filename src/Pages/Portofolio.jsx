@@ -66,7 +66,7 @@ const ToggleButton = ({ onClick, isShowingMore }) => (
         <polyline points={isShowingMore ? "18 15 12 9 6 15" : "6 9 12 15 18 9"}></polyline>
       </svg>
     </span>
-    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-500/50 transition-all duration-300 group-hover:w-full"></span>
+    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-rose-500/50 transition-all duration-300 group-hover:w-full"></span>
   </button>
 );
 
@@ -75,16 +75,14 @@ function TabPanel({ children, value, index, ...other }) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
+      style={{ display: value !== index ? 'none' : 'block' }}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: { xs: 1, sm: 3 } }}>
-          <Typography component="div">{children}</Typography>
-        </Box>
-      )}
+      <Box sx={{ p: { xs: 1, sm: 3 } }}>
+        <Typography component="div">{children}</Typography>
+      </Box>
     </div>
   );
 }
@@ -135,6 +133,15 @@ export default function FullWidthTabs() {
     });
   }, []);
 
+  // Refresh AOS when projects change
+  useEffect(() => {
+    if (projects.length > 0) {
+      setTimeout(() => {
+        AOS.refresh();
+      }, 100);
+    }
+  }, [projects, selectedCategory, showAllProjects]);
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -145,8 +152,14 @@ export default function FullWidthTabs() {
       ]);
 
       // Error handling untuk setiap request
-      if (projectsResponse.error) throw projectsResponse.error;
-      if (certificatesResponse.error) throw certificatesResponse.error;
+      if (projectsResponse.error) {
+        console.error('Projects fetch error:', projectsResponse.error);
+        throw projectsResponse.error;
+      }
+      if (certificatesResponse.error) {
+        console.error('Certificates fetch error:', certificatesResponse.error);
+        throw certificatesResponse.error;
+      }
 
       // Supabase mengembalikan data dalam properti 'data'
       const projectData = projectsResponse.data || [];
@@ -191,22 +204,23 @@ export default function FullWidthTabs() {
   }, []);
 
   // Filter projects berdasarkan kategori yang dipilih
-  const filteredProjects = projects.filter(project => 
-    project.category === selectedCategory || !project.category && selectedCategory === 'Project'
-  );
+  const filteredProjects = projects.filter(project => {
+    const projectCategory = project.category || 'Project'; // Default ke 'Project' jika tidak ada category
+    return projectCategory === selectedCategory;
+  });
 
   const displayedProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, initialItems);
   const displayedCertificates = showAllCertificates ? certificates : certificates.slice(0, initialItems);
 
   // Sisa dari komponen (return statement) tidak ada perubahan
   return (
-    <div className="md:px-[10%] px-[5%] w-full sm:mt-0 mt-[3rem] bg-[#030014] overflow-hidden" id="Portofolio">
+    <div className="md:px-[10%] px-[5%] w-full sm:mt-0 mt-[3rem] overflow-hidden" id="Portofolio">
       {/* Header section - unchanged */}
       <div className="text-center pb-10" data-aos="fade-up" data-aos-duration="1000">
-        <h2 className="inline-block text-3xl md:text-5xl font-bold text-center mx-auto text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#a855f7]">
+        <h2 className="inline-block text-3xl md:text-5xl font-bold text-center mx-auto text-transparent bg-clip-text bg-gradient-to-r from-[#dc2626] to-[#f43f5e]">
           <span style={{
-            color: '#6366f1',
-            backgroundImage: 'linear-gradient(45deg, #6366f1 10%, #a855f7 93%)',
+            color: '#dc2626',
+            backgroundImage: 'linear-gradient(45deg, #dc2626 10%, #f43f5e 93%)',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
@@ -238,7 +252,7 @@ export default function FullWidthTabs() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: "linear-gradient(180deg, rgba(139, 92, 246, 0.03) 0%, rgba(59, 130, 246, 0.03) 100%)",
+              background: "linear-gradient(180deg, rgba(244, 63, 94, 0.03) 0%, rgba(220, 38, 38, 0.03) 100%)",
               backdropFilter: "blur(10px)",
               zIndex: 0,
             },
@@ -266,7 +280,7 @@ export default function FullWidthTabs() {
                 borderRadius: "12px",
                 "&:hover": {
                   color: "#ffffff",
-                  backgroundColor: "rgba(139, 92, 246, 0.1)",
+                  backgroundColor: "rgba(244, 63, 94, 0.1)",
                   transform: "translateY(-2px)",
                   "& .lucide": {
                     transform: "scale(1.1) rotate(5deg)",
@@ -274,8 +288,8 @@ export default function FullWidthTabs() {
                 },
                 "&.Mui-selected": {
                   color: "#fff",
-                  background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))",
-                  boxShadow: "0 4px 15px -3px rgba(139, 92, 246, 0.2)",
+                  background: "linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(220, 38, 38, 0.2))",
+                  boxShadow: "0 4px 15px -3px rgba(244, 63, 94, 0.2)",
                   "& .lucide": {
                     color: "#a78bfa",
                   },
@@ -326,7 +340,7 @@ export default function FullWidthTabs() {
                     className={`
                       px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-base transition-all duration-400 whitespace-nowrap
                       ${selectedCategory === category
-                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
+                        ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-500/30'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
                       }
                     `}
@@ -337,13 +351,24 @@ export default function FullWidthTabs() {
               </div>
             </div>
 
-            <div className="container mx-auto flex justify-center items-center overflow-hidden">
+            <div className="container mx-auto py-8 min-h-[500px]">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
+                {displayedProjects.length === 0 && projects.length > 0 && (
+                  <div className="col-span-full text-center py-20">
+                    <p className="text-gray-400 text-lg">No projects found in this category</p>
+                  </div>
+                )}
+                {displayedProjects.length === 0 && projects.length === 0 && (
+                  <div className="col-span-full text-center py-20">
+                    <p className="text-gray-400 text-lg">Loading projects...</p>
+                  </div>
+                )}
                 {displayedProjects.map((project, index) => (
                   <div
                     key={project.id || index}
-                    data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
-                    data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay={index * 100}
                   >
                     <CardProject
                       Img={project.Img}

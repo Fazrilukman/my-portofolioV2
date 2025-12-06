@@ -99,7 +99,7 @@ const AdminDashboard = () => {
       <AdminLayout activePage="dashboard">
         <div className="flex items-center justify-center h-[calc(100vh-12rem)]">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4" />
+            <div className="w-16 h-16 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
             <p className="text-gray-400">Loading dashboard...</p>
           </div>
         </div>
@@ -128,7 +128,7 @@ const AdminDashboard = () => {
             title="Total Projects"
             value={stats.projects}
             icon={FolderKanban}
-            color="bg-gradient-to-br from-blue-500 to-blue-600"
+            color="bg-gradient-to-br from-red-500 to-red-600"
             trend="+12% from last month"
           />
           <StatCard
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
             title="Total Comments"
             value={stats.comments}
             icon={MessageSquare}
-            color="bg-gradient-to-br from-purple-500 to-purple-600"
+            color="bg-gradient-to-br from-rose-500 to-rose-600"
             trend="+23% from last month"
           />
           <StatCard
@@ -177,8 +177,8 @@ const AdminDashboard = () => {
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 bg-indigo-500/20 rounded-full flex items-center justify-center">
-                        <MessageSquare className="w-5 h-5 text-indigo-400" />
+                      <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                        <MessageSquare className="w-5 h-5 text-red-400" />
                       </div>
                     )}
                   </div>
@@ -189,7 +189,7 @@ const AdminDashboard = () => {
                     </div>
                     <p className="text-sm text-gray-400 line-clamp-2">{comment.content}</p>
                     {comment.is_pinned && (
-                      <span className="inline-block mt-2 px-2 py-1 text-xs bg-indigo-500/20 text-indigo-300 rounded">
+                      <span className="inline-block mt-2 px-2 py-1 text-xs bg-red-500/20 text-red-300 rounded">
                         Pinned
                       </span>
                     )}
@@ -204,9 +204,9 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <button
             onClick={() => window.location.href = '/admin/projects'}
-            className="p-6 bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/30 rounded-xl hover:from-blue-500/20 hover:to-blue-600/20 transition-all text-left group"
+            className="p-6 bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/30 rounded-xl hover:from-red-500/20 hover:to-red-600/20 transition-all text-left group"
           >
-            <FolderKanban className="w-8 h-8 text-blue-400 mb-3 group-hover:scale-110 transition-transform" />
+            <FolderKanban className="w-8 h-8 text-red-400 mb-3 group-hover:scale-110 transition-transform" />
             <h3 className="text-lg font-semibold text-white mb-1">Manage Projects</h3>
             <p className="text-sm text-gray-400">Add, edit, or remove portfolio projects</p>
           </button>
@@ -222,9 +222,9 @@ const AdminDashboard = () => {
 
           <button
             onClick={() => window.location.href = '/admin/comments'}
-            className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-xl hover:from-purple-500/20 hover:to-purple-600/20 transition-all text-left group"
+            className="p-6 bg-gradient-to-br from-rose-500/10 to-rose-600/10 border border-rose-500/30 rounded-xl hover:from-rose-500/20 hover:to-rose-600/20 transition-all text-left group"
           >
-            <MessageSquare className="w-8 h-8 text-purple-400 mb-3 group-hover:scale-110 transition-transform" />
+            <MessageSquare className="w-8 h-8 text-rose-400 mb-3 group-hover:scale-110 transition-transform" />
             <h3 className="text-lg font-semibold text-white mb-1">Moderate Comments</h3>
             <p className="text-sm text-gray-400">Pin, delete, or manage comments</p>
           </button>

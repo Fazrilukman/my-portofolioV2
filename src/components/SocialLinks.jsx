@@ -153,7 +153,7 @@ const SocialLinks = () => {
         className="text-xl font-semibold text-white mb-6 flex items-center gap-2"
         data-aos="fade-down" 
       >
-        <span className="inline-block w-8 h-1 bg-indigo-500 rounded-full"></span>
+        <span className="inline-block w-8 h-1 bg-red-500 rounded-full"></span>
         Connect With Me
       </h3>
 
@@ -164,8 +164,8 @@ const SocialLinks = () => {
           target="_blank"
           rel="noopener noreferrer"
           className="group relative flex items-center justify-between p-4 rounded-lg 
-                     bg-white/5 border border-white/10 overflow-hidden
-                     hover:border-white/20 transition-all duration-500"
+                     bg-white/5 border border-white/5 overflow-hidden
+                     hover:border-white/10 transition-all duration-500"
           data-aos="fade-up"
           data-aos-delay="100" 
         >
@@ -228,8 +228,8 @@ const SocialLinks = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="group relative flex items-center gap-3 p-4 rounded-xl 
-                               bg-white/5 border border-white/10 overflow-hidden
-                               hover:border-white/20 transition-all duration-500"
+                               bg-white/5 border border-white/5 overflow-hidden
+                               hover:border-white/10 transition-all duration-500"
               data-aos="fade-up" 
               data-aos-delay={200 + index * 100} 
             >
@@ -287,8 +287,8 @@ const SocialLinks = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="group relative flex items-center gap-3 p-4 rounded-xl 
-                               bg-white/5 border border-white/10 overflow-hidden
-                               hover:border-white/20 transition-all duration-500"
+                               bg-white/5 border border-white/5 overflow-hidden
+                               hover:border-white/10 transition-all duration-500"
               data-aos="fade-up" 
               data-aos-delay={400 + index * 100}
             >
