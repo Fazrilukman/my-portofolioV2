@@ -35,15 +35,17 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .lanyard-wrapper {
-    height: 400px !important;
-    min-height: 400px;
+    height: 340px !important;
+    min-height: 340px;
+    max-width: 440px;
   }
 }
 
 @media (max-width: 480px) {
   .lanyard-wrapper {
-    height: 350px !important;
-    min-height: 350px;
+    height: 280px !important;
+    min-height: 280px;
+    max-width: 380px;
   }
 }
 

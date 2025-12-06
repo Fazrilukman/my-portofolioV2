@@ -31,7 +31,7 @@ const MainTitle = memo(({ title }) => {
   
   return (
     <div className="space-y-3" data-aos="fade-up" data-aos-delay="600">
-      <h1 className="text-5xl sm:text-6xl md:text-6xl lg:text-6xl xl:text-7xl font-bold" style={{ letterSpacing: '0.05em' }}>
+      <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold leading-tight" style={{ letterSpacing: '0.05em' }}>
         {/* First Line */}
         <span className="relative inline-block">
           <span className="absolute -inset-2 bg-gradient-to-r from-red-500 to-rose-500 blur-2xl opacity-20"></span>
@@ -65,7 +65,7 @@ const TechStack = memo(({ tech }) => (
 
 const CTAButton = memo(({ href, text, icon: Icon }) => (
   <a href={href}>
-    <button className="group relative w-[160px]">
+    <button className="group relative w-full sm:w-[160px]">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-rose-600 rounded-xl opacity-50 blur-md group-hover:opacity-90 transition-all duration-700"></div>
       <div className="relative h-11 bg-[#020617] backdrop-blur-xl rounded-lg border border-white/10 leading-none overflow-hidden">
         <div className="absolute inset-0 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 bg-gradient-to-r from-red-500/20 to-rose-500/20"></div>
@@ -207,10 +207,10 @@ const Home = () => {
   }, [handleTyping]);
 
   return (
-    <div className="min-h-screen overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-28 sm:pt-0" id="Home">
+    <div className="min-h-screen overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-20 md:pt-16 lg:pt-12" id="Home">
       <div className={`relative z-10 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
         <div className="container mx-auto  min-h-screen ">
-          <div className="flex flex-col lg:flex-row items-center justify-center h-screen md:justify-between gap-0 sm:gap-12 lg:gap-20">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-start md:justify-between gap-10 sm:gap-12 lg:gap-20 min-h-[85vh]">
             {/* Left Column */}
             <div className="w-full lg:w-1/2 space-y-6 sm:space-y-8 text-left lg:text-left order-1 lg:order-1 lg:mt-0"
               data-aos="fade-right"
@@ -241,13 +241,13 @@ const Home = () => {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-row gap-3 w-full justify-start" data-aos="fade-up" data-aos-delay="1400">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-start" data-aos="fade-up" data-aos-delay="1400">
                   <CTAButton href="#Portofolio" text="Projects" icon={ExternalLink} />
                   <CTAButton href="#Contact" text="Contact" icon={Mail} />
                 </div>
 
                 {/* Social Links */}
-                <div className="flex gap-2 justify-start" data-aos="fade-up" data-aos-delay="1600">
+                <div className="flex flex-wrap gap-3 justify-start" data-aos="fade-up" data-aos-delay="1600">
                   {profileData.social_links.map((social, index) => (
                     <SocialLink key={index} icon={social.icon} link={social.link} />
                   ))}
@@ -256,7 +256,7 @@ const Home = () => {
             </div>
 
             {/* Right Column - Lanyard Card */}
-            <div className="w-full py-[10%] sm:py-0 lg:w-1/2 h-auto lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2 mt-8 lg:mt-0"
+            <div className="w-full max-w-[440px] lg:max-w-none mx-auto py-8 sm:py-10 lg:py-0 lg:w-1/2 h-auto lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2 mt-6 sm:mt-8 lg:mt-0"
               data-aos="fade-left"
               data-aos-delay="600">
               

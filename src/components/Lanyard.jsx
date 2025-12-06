@@ -11,7 +11,7 @@ function Card3D({ isMobile }) {
   
   const cardWidth = 2;
   const cardHeight = 3;
-  const scale = isMobile ? 1.2 : 1;
+  const scale = isMobile ? 0.9 : 1;
 
   useFrame((state) => {
     if (meshRef.current) {
