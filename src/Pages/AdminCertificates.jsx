@@ -18,6 +18,9 @@ const AdminCertificates = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadMethod, setUploadMethod] = useState('url'); // 'url' or 'file'
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -50,12 +53,74 @@ const AdminCertificates = () => {
 
   const handleOpenModal = () => {
     setImageUrl('');
+    setImageFile(null);
+    setUploadMethod('url');
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setImageUrl('');
+    setImageFile(null);
+    setUploadMethod('url');
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validasi file
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!validTypes.includes(file.type)) {
+        Swal.fire('Error', 'Only JPG, PNG, and WEBP files are allowed', 'error');
+        return;
+      }
+
+      if (file.size > maxSize) {
+        Swal.fire('Error', 'File size must be less than 5MB', 'error');
+        return;
+      }
+
+      setImageFile(file);
+    }
+  };
+
+  const uploadImageToSupabase = async (file) => {
+    try {
+      setUploading(true);
+      
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+
+      // Buat nama file unik
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `certificates/${fileName}`;
+
+      // Upload ke Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('certificates')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      // Dapatkan public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('certificates')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -67,13 +132,25 @@ const AdminCertificates = () => {
         throw new Error('Supabase not configured');
       }
 
-      if (!imageUrl.trim()) {
-        throw new Error('Image URL is required');
+      let finalImageUrl = imageUrl;
+
+      // Jika upload file
+      if (uploadMethod === 'file') {
+        if (!imageFile) {
+          throw new Error('Please select an image file');
+        }
+        finalImageUrl = await uploadImageToSupabase(imageFile);
+      } else {
+        // Jika pakai URL
+        if (!imageUrl.trim()) {
+          throw new Error('Image URL is required');
+        }
+        finalImageUrl = imageUrl.trim();
       }
 
       const { error } = await supabase
         .from('certificates')
-        .insert([{ Img: imageUrl.trim() }]);
+        .insert([{ Img: finalImageUrl }]);
 
       if (error) throw error;
       
@@ -286,29 +363,100 @@ const AdminCertificates = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Certificate Image URL *
-                </label>
-                <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="https://example.com/certificate.png"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  Enter the direct URL to your certificate image
-                </p>
+              {/* Upload Method Toggle */}
+              <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setUploadMethod('url')}
+                  className={`flex-1 px-4 py-2 rounded-md transition-all ${
+                    uploadMethod === 'url'
+                      ? 'bg-red-600 text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  URL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUploadMethod('file')}
+                  className={`flex-1 px-4 py-2 rounded-md transition-all ${
+                    uploadMethod === 'file'
+                      ? 'bg-red-600 text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Upload File
+                </button>
               </div>
 
+              {/* URL Input */}
+              {uploadMethod === 'url' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Certificate Image URL *
+                  </label>
+                  <input
+                    type="url"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    placeholder="https://example.com/certificate.png"
+                    required={uploadMethod === 'url'}
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Enter the direct URL to your certificate image
+                  </p>
+                </div>
+              )}
+
+              {/* File Upload */}
+              {uploadMethod === 'file' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Certificate Image File *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="certificate-file"
+                      required={uploadMethod === 'file'}
+                    />
+                    <label
+                      htmlFor="certificate-file"
+                      className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-red-500 transition-colors bg-white/5"
+                    >
+                      {imageFile ? (
+                        <div className="text-center">
+                          <ImageIcon className="w-10 h-10 text-green-500 mx-auto mb-2" />
+                          <p className="text-sm text-white">{imageFile.name}</p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {(imageFile.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">Click to change</p>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <Upload className="w-10 h-10 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-300">Click to upload</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            JPG, PNG, WEBP (Max 5MB)
+                          </p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              )}
+
               {/* Image Preview */}
-              {imageUrl && (
+              {((uploadMethod === 'url' && imageUrl) || (uploadMethod === 'file' && imageFile)) && (
                 <div className="border border-white/10 rounded-lg p-4">
                   <p className="text-sm text-gray-400 mb-2">Preview:</p>
                   <img
-                    src={imageUrl}
+                    src={uploadMethod === 'url' ? imageUrl : URL.createObjectURL(imageFile)}
                     alt="Certificate preview"
                     className="w-full rounded-lg"
                     onError={(e) => {
@@ -320,7 +468,7 @@ const AdminCertificates = () => {
                     className="text-red-400 text-sm text-center py-4"
                     style={{ display: 'none' }}
                   >
-                    Failed to load image. Please check the URL.
+                    Failed to load image. Please check the {uploadMethod === 'url' ? 'URL' : 'file'}.
                   </p>
                 </div>
               )}
@@ -335,13 +483,13 @@ const AdminCertificates = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || uploading}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-lg transition-all disabled:opacity-50"
                 >
-                  {submitting ? (
+                  {submitting || uploading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Adding...
+                      {uploading ? 'Uploading...' : 'Adding...'}
                     </>
                   ) : (
                     <>

@@ -49,8 +49,8 @@ function Card3D() {
       <mesh position={[0, 1, 0.06]}>
         <boxGeometry args={[1.8, 0.4, 0.02]} />
         <meshStandardMaterial
-          color="#dc2626"
-          emissive="#dc2626"
+          color="#6366f1"
+          emissive="#6366f1"
           emissiveIntensity={0.5}
         />
       </mesh>
@@ -59,8 +59,8 @@ function Card3D() {
       <mesh position={[0, 0.2, 0.06]}>
         <boxGeometry args={[1.6, 0.8, 0.02]} />
         <meshStandardMaterial
-          color="#f43f5e"
-          emissive="#f43f5e"
+          color="#8b5cf6"
+          emissive="#8b5cf6"
           emissiveIntensity={0.3}
           transparent
           opacity={0.9}
@@ -71,8 +71,8 @@ function Card3D() {
       <mesh position={[0, -0.8, 0.06]}>
         <boxGeometry args={[1.4, 0.3, 0.02]} />
         <meshStandardMaterial
-          color="#f43f5e"
-          emissive="#f43f5e"
+          color="#a855f7"
+          emissive="#a855f7"
           emissiveIntensity={0.4}
         />
       </mesh>
@@ -112,7 +112,7 @@ function LanyardRope({ startY }) {
   return (
     <mesh geometry={tubeGeometry}>
       <meshStandardMaterial
-        color="#dc2626"
+        color="#6366f1"
         metalness={0.3}
         roughness={0.7}
       />
@@ -135,7 +135,7 @@ export default function LanyardSimple() {
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <directionalLight position={[-10, -10, -5]} intensity={0.5} />
-        <pointLight position={[0, 5, 5]} intensity={1} color="#dc2626" />
+        <pointLight position={[0, 5, 5]} intensity={1} color="#6366f1" />
         
         <Card3D />
         
