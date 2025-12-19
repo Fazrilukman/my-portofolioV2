@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback, memo } from "react"
-import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles } from "lucide-react"
-import { DotLottieReact } from '@lottiefiles/dotlottie-react'
+import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles, Code2, CloudDownload, Cpu, ShieldCheck, Server, Terminal } from "lucide-react"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { supabase } from "../supabase"
-import Lanyard from "../components/Lanyard"
+
 
 // Memoized Components
 const StatusBadge = memo(() => (
@@ -89,6 +88,134 @@ const SocialLink = memo(({ icon: Icon, link }) => (
       </div>
     </button>
   </a>
+));
+
+const LaptopShowcase = memo(() => (
+  <div className="relative w-full max-w-[640px] sm:max-w-[720px] aspect-[4/3]">
+    <div
+      className="absolute -inset-16 opacity-70 blur-3xl"
+      style={{
+        background: "radial-gradient(circle at top, rgba(244,63,94,0.35), transparent 60%)"
+      }}
+    />
+    <div
+      className="absolute -inset-12 opacity-60 blur-3xl"
+      style={{
+        background: "radial-gradient(circle at bottom, rgba(239,68,68,0.25), transparent 60%)"
+      }}
+    />
+    <div className="absolute inset-0 rounded-[36px] bg-gradient-to-br from-white/10 via-white/5 to-transparent opacity-80" />
+    <div className="absolute inset-[1px] rounded-[35px] bg-gradient-to-br from-[#070010]/95 via-[#0e0017]/90 to-[#05000c]/95 border border-white/10 backdrop-blur-2xl shadow-[0_40px_120px_rgba(0,0,0,0.6)]">
+      <div
+        className="absolute inset-0 rounded-[34px] opacity-90"
+        style={{
+          background: "radial-gradient(circle at top, rgba(244,63,94,0.2), transparent 60%)"
+        }}
+      />
+      <div
+        className="absolute inset-0 rounded-[34px] opacity-25"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+          backgroundSize: "28px 28px"
+        }}
+      />
+      <div className="absolute inset-0 rounded-[34px] overflow-hidden">
+        <div className="absolute -top-1/2 left-0 right-0 h-1/2 bg-gradient-to-b from-red-500/12 via-red-500/10 to-transparent animate-scanline" />
+        <div className="absolute top-0 -left-full h-full w-1/3 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-20 animate-[shine_6s_ease-in-out_infinite]" />
+      </div>
+
+      <div className="absolute top-4 left-6 right-6 flex items-center justify-between text-[0.6rem] uppercase tracking-[0.35em] text-gray-400">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500/90 shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+          <span>System Online</span>
+        </div>
+        <span className="text-red-300/80">IT Core</span>
+      </div>
+
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-[82%] sm:w-[78%] h-[60%] translate-y-2">
+          <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/15 via-white/5 to-white/10 p-[1px]">
+            <div className="absolute inset-[1px] rounded-[23px] bg-gradient-to-br from-[#0b1326]/95 via-[#0c1a2d]/90 to-[#0a101f]/95 border border-white/10 shadow-[0_18px_45px_rgba(0,0,0,0.6)]">
+              <div className="absolute inset-0 rounded-[23px] bg-[radial-gradient(circle_at_top,rgba(244,63,94,0.18),transparent_65%)]" />
+              <div className="absolute top-3 left-4 right-4 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-400/80" />
+                <span className="w-2 h-2 rounded-full bg-rose-400/60" />
+                <span className="w-2 h-2 rounded-full bg-white/20" />
+                <span className="ml-auto text-[0.55rem] uppercase tracking-[0.2em] text-red-300/70">console</span>
+              </div>
+
+              <div className="absolute left-4 right-4 top-10 grid grid-cols-[1.2fr_0.8fr] gap-4">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[0.55rem] text-gray-400">
+                    <Code2 className="w-3 h-3 text-red-300" />
+                    <span>build /app</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-2 w-4/5 rounded-full bg-gradient-to-r from-red-400/70 to-transparent animate-pulse" />
+                    <div className="h-2 w-3/5 rounded-full bg-gradient-to-r from-rose-400/60 to-transparent" />
+                    <div className="h-2 w-5/6 rounded-full bg-gradient-to-r from-red-400/50 to-transparent" />
+                    <div className="h-2 w-2/3 rounded-full bg-gradient-to-r from-rose-400/40 to-transparent" />
+                    <div className="h-2 w-1/2 rounded-full bg-gradient-to-r from-red-400/40 to-transparent" />
+                  </div>
+                </div>
+                <div className="rounded-xl bg-white/5 border border-white/10 p-3 backdrop-blur">
+                  <div className="flex items-center gap-2 text-[0.55rem] uppercase tracking-[0.2em] text-gray-400">
+                    <Cpu className="w-3 h-3 text-rose-300" />
+                    <span>runtime</span>
+                  </div>
+                  <div className="mt-3 space-y-3">
+                    <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                      <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-red-400/80 to-rose-400/30 animate-pulse" />
+                    </div>
+                    <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                      <div className="h-full w-2/3 rounded-full bg-gradient-to-r from-rose-400/70 to-red-400/30" />
+                    </div>
+                    <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                      <div className="h-full w-3/5 rounded-full bg-gradient-to-r from-red-400/60 to-rose-400/20" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[0.55rem] text-gray-400">
+                <span className="text-red-300/70">build ok</span>
+                <span>latency 12ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute left-1/2 -translate-x-1/2 -bottom-[18%] w-[118%] h-[24%] rounded-[26px] bg-gradient-to-b from-[#0a1326]/90 to-[#0a0f1f]/85 border border-white/10 shadow-[0_14px_30px_rgba(0,0,0,0.6)]">
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-2 rounded-full bg-white/10" />
+            <div className="absolute bottom-2 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-rose-400/50 to-transparent" />
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 left-6 right-6 space-y-2">
+        <div className="h-1.5 w-2/3 rounded-full bg-gradient-to-r from-red-500/70 to-transparent" />
+        <div className="h-1.5 w-1/2 rounded-full bg-gradient-to-r from-rose-500/60 to-transparent" />
+        <div className="h-1.5 w-3/4 rounded-full bg-gradient-to-r from-red-400/40 to-transparent" />
+      </div>
+
+      <div className="absolute left-5 top-16 hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-[0.65rem] text-gray-300 backdrop-blur-xl shadow-[0_10px_25px_rgba(0,0,0,0.35)] animate-float">
+        <Terminal className="w-4 h-4 text-red-300" />
+        <span>CLI Shell</span>
+      </div>
+      <div className="absolute right-5 top-16 hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-[0.65rem] text-gray-300 backdrop-blur-xl shadow-[0_10px_25px_rgba(0,0,0,0.35)] animate-float-delayed">
+        <CloudDownload className="w-4 h-4 text-rose-300" />
+        <span>Cloud Sync</span>
+      </div>
+      <div className="absolute left-8 bottom-16 hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-[0.65rem] text-gray-300 backdrop-blur-xl shadow-[0_10px_25px_rgba(0,0,0,0.35)] animate-float-delayed">
+        <Server className="w-4 h-4 text-red-300" />
+        <span>Server Node</span>
+      </div>
+      <div className="absolute right-8 bottom-16 hidden sm:flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-[0.65rem] text-gray-300 backdrop-blur-xl shadow-[0_10px_25px_rgba(0,0,0,0.35)] animate-float">
+        <ShieldCheck className="w-4 h-4 text-rose-300" />
+        <span>Secure</span>
+      </div>
+    </div>
+  </div>
 ));
 
 // Constants
@@ -207,7 +334,7 @@ const Home = () => {
   }, [handleTyping]);
 
   return (
-    <div className="min-h-screen bg-[#030014] overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-32 sm:pt-20 md:pt-0" id="Home">
+    <div className="min-h-screen bg-[#140003] overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-32 sm:pt-20 md:pt-0" id="Home">
       <div className={`relative z-10 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
         <div className="container mx-auto min-h-screen">
           <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen md:justify-between gap-8 sm:gap-12 lg:gap-20">
@@ -255,17 +382,14 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right Column - Lanyard Card */}
+            {/* Right Column - IT Laptop Scene */}
             <div className="w-full py-0 sm:py-0 lg:w-1/2 h-auto lg:min-h-[750px] xl:min-h-[850px] relative flex items-center justify-center order-2 lg:order-2 mt-0 lg:mt-0"
               data-aos="fade-left"
               data-aos-delay="600"
               style={{ overflow: 'visible', perspective: '2000px' }}>
               
-              {/* Interactive Lanyard Card */}
-              <div style={{ width: '100%', height: '100%', overflow: 'visible' }}>
-                <Lanyard />
-              </div>
-              
+              <LaptopShowcase />
+               
             </div>
           </div>
         </div>

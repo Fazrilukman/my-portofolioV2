@@ -71,42 +71,43 @@ const ProfileImage = memo(({ photoUrl }) => (
 
 const StatCard = memo(({ icon: Icon, color, value, label, description, animation }) => (
   <div data-aos={animation} data-aos-duration={1300} className="relative group">
-    <div className="relative z-10 bg-gray-900/50 backdrop-blur-lg rounded-2xl p-6 border border-white/10 overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl h-full flex flex-col justify-between">
-      <div className={`absolute -z-10 inset-0 bg-gradient-to-br ${color} opacity-10 group-hover:opacity-20 transition-opacity duration-300`}></div>
-      
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center bg-white/10 transition-transform group-hover:rotate-6">
-          <Icon className="w-8 h-8 text-white" />
-        </div>
-        <span 
-          className="text-4xl font-bold text-white"
-          data-aos="fade-up-left"
-          data-aos-duration="1500"
-          data-aos-anchor-placement="top-bottom"
-        >
-          {value}
-        </span>
-      </div>
+    <div className={`absolute -inset-1 rounded-3xl bg-gradient-to-r ${color} opacity-20 blur-xl transition-opacity duration-500 group-hover:opacity-40`}></div>
+    <div className="relative rounded-3xl p-[1px] bg-gradient-to-br from-white/20 via-white/5 to-white/10">
+      <div className="relative rounded-3xl bg-[#120008]/70 border border-white/10 backdrop-blur-xl p-6 overflow-hidden h-full">
+        <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-[0.08]`}></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(244,63,94,0.18),transparent_60%)] opacity-70"></div>
+        <div className="absolute -top-1/2 left-0 right-0 h-1/2 bg-gradient-to-b from-red-500/10 via-transparent to-transparent animate-scanline"></div>
+        <div className="absolute top-0 -left-full h-full w-1/3 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-20 animate-[shine_7s_ease-in-out_infinite]"></div>
 
-      <div>
-        <p 
-          className="text-sm uppercase tracking-wider text-gray-300 mb-2"
-          data-aos="fade-up"
-          data-aos-duration="800"
-          data-aos-anchor-placement="top-bottom"
-        >
-          {label}
-        </p>
-        <div className="flex items-center justify-between">
-          <p 
-            className="text-xs text-gray-400"
-            data-aos="fade-up"
-            data-aos-duration="1000"
-            data-aos-anchor-placement="top-bottom"
-          >
-            {description}
-          </p>
-          <ArrowUpRight className="w-4 h-4 text-white/50 group-hover:text-white transition-colors" />
+        <div className="relative flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className={`relative w-12 h-12 rounded-2xl bg-gradient-to-br ${color} p-[1px] bg-[length:200%_200%] animate-iconflow animate-float`}>
+              <div className="w-full h-full rounded-2xl bg-[#0f0a16]/90 flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.35)]">
+                <Icon className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-[0.7rem] uppercase tracking-[0.35em] text-gray-400">{label}</p>
+              <p className="text-sm text-gray-400">{description}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-3xl sm:text-4xl font-semibold bg-gradient-to-r from-white to-rose-200 bg-clip-text text-transparent">
+              {value}
+            </span>
+            <div className="mt-2 flex items-center justify-end gap-1 text-[0.65rem] text-gray-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+              <span>live</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative mt-6 h-[2px] rounded-full bg-white/10 overflow-hidden">
+          <div className={`h-full w-1/2 bg-gradient-to-r ${color} animate-statglow`}></div>
+        </div>
+
+        <div className="absolute right-5 bottom-5 text-white/60 transition-colors group-hover:text-white">
+          <ArrowUpRight className="w-4 h-4" />
         </div>
       </div>
     </div>
@@ -176,10 +177,7 @@ const AboutPage = () => {
 
   // Calculate years of experience
   const YearExperience = useMemo(() => {
-    const startDate = new Date("2021-11-06");
-    const today = new Date();
-    return today.getFullYear() - startDate.getFullYear() -
-      (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0);
+    return 2;
   }, []);
 
   // Optimized AOS initialization
@@ -213,7 +211,7 @@ const AboutPage = () => {
       color: "from-red-500 to-rose-500",
       value: totalProjects,
       label: "Total Projects",
-      description: "Innovative web solutions crafted",
+      description: "Web, design, and editing work delivered",
       animation: "fade-right",
     },
     {
@@ -333,6 +331,16 @@ const AboutPage = () => {
         @keyframes spin-slower {
           to { transform: rotate(360deg); }
         }
+        @keyframes statglow {
+          0% { transform: translateX(-60%); opacity: 0.3; }
+          50% { opacity: 0.9; }
+          100% { transform: translateX(120%); opacity: 0.3; }
+        }
+        @keyframes iconflow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
         .animate-bounce-slow {
           animation: bounce 3s infinite;
         }
@@ -341,6 +349,12 @@ const AboutPage = () => {
         }
         .animate-spin-slower {
           animation: spin-slower 8s linear infinite;
+        }
+        .animate-statglow {
+          animation: statglow 5s ease-in-out infinite;
+        }
+        .animate-iconflow {
+          animation: iconflow 6s ease-in-out infinite;
         }
       `}</style>
     </div>

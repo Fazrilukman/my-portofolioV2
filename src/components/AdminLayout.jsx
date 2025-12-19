@@ -4,6 +4,7 @@ import {
   LayoutDashboard, 
   FolderKanban, 
   Award, 
+  Boxes,
   MessageSquare, 
   LogOut,
   Menu,
@@ -46,6 +47,7 @@ const AdminLayout = ({ children, activePage }) => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
     { id: 'projects', label: 'Projects', icon: FolderKanban, path: '/admin/projects' },
     { id: 'certificates', label: 'Certificates', icon: Award, path: '/admin/certificates' },
+    { id: 'tech-stack', label: 'Tech Stack', icon: Boxes, path: '/admin/tech-stack' },
     { id: 'comments', label: 'Comments', icon: MessageSquare, path: '/admin/comments' },
     { id: 'profile', label: 'Profile Settings', icon: User, path: '/admin/profile' },
   ];

@@ -100,8 +100,8 @@ function a11yProps(index) {
   };
 }
 
-// techStacks tetap sama
-const techStacks = [
+// techStacks tetap sama (fallback jika belum ada data dari Supabase)
+const defaultTechStacks = [
   { icon: "html.svg", language: "HTML" },
   { icon: "css.svg", language: "CSS" },
   { icon: "javascript.svg", language: "JavaScript" },
@@ -126,6 +126,8 @@ export default function FullWidthTabs() {
   const [value, setValue] = useState(0);
   const [projects, setProjects] = useState([]);
   const [certificates, setCertificates] = useState([]);
+  const [techStacks, setTechStacks] = useState(defaultTechStacks);
+  const [techStackLoading, setTechStackLoading] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [showAllCertificates, setShowAllCertificates] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Project');
@@ -148,12 +150,29 @@ export default function FullWidthTabs() {
   }, [projects, selectedCategory, showAllProjects]);
 
 
+  const normalizeTechStack = (items) => {
+    return (items || [])
+      .filter((item) => item?.name && item?.icon_url)
+      .sort((a, b) => {
+        const orderA = a.sort_order ?? 0;
+        const orderB = b.sort_order ?? 0;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.name.localeCompare(b.name);
+      })
+      .map((item) => ({
+        icon: item.icon_url,
+        language: item.name
+      }));
+  };
+
   const fetchData = useCallback(async () => {
     try {
       // Mengambil data dari Supabase secara paralel
-      const [projectsResponse, certificatesResponse] = await Promise.all([
+      setTechStackLoading(true);
+      const [projectsResponse, certificatesResponse, techStackResponse] = await Promise.all([
         supabase.from("projects").select("*").order('id', { ascending: true }),
         supabase.from("certificates").select("*").order('id', { ascending: true }), 
+        supabase.from("tech_stack").select("*").order('sort_order', { ascending: true }),
       ]);
 
       // Error handling untuk setiap request
@@ -165,19 +184,30 @@ export default function FullWidthTabs() {
         console.error('Certificates fetch error:', certificatesResponse.error);
         throw certificatesResponse.error;
       }
+      if (techStackResponse.error) {
+        console.error('Tech stack fetch error:', techStackResponse.error);
+      }
 
       // Supabase mengembalikan data dalam properti 'data'
       const projectData = projectsResponse.data || [];
       const certificateData = certificatesResponse.data || [];
+      const techStackData = techStackResponse?.data || [];
 
       setProjects(projectData);
       setCertificates(certificateData);
+      if (!techStackResponse.error) {
+        const normalizedTechStack = normalizeTechStack(techStackData);
+        setTechStacks(normalizedTechStack);
+        localStorage.setItem("tech_stack", JSON.stringify(normalizedTechStack));
+      }
 
       // Store in localStorage (fungsionalitas ini tetap dipertahankan)
       localStorage.setItem("projects", JSON.stringify(projectData));
       localStorage.setItem("certificates", JSON.stringify(certificateData));
     } catch (error) {
       console.error("Error fetching data from Supabase:", error.message);
+    } finally {
+      setTechStackLoading(false);
     }
   }, []);
 
@@ -187,10 +217,14 @@ export default function FullWidthTabs() {
     // Coba ambil dari localStorage dulu untuk laod lebih cepat
     const cachedProjects = localStorage.getItem('projects');
     const cachedCertificates = localStorage.getItem('certificates');
+    const cachedTechStack = localStorage.getItem('tech_stack');
 
     if (cachedProjects && cachedCertificates) {
         setProjects(JSON.parse(cachedProjects));
         setCertificates(JSON.parse(cachedCertificates));
+    }
+    if (cachedTechStack) {
+        setTechStacks(JSON.parse(cachedTechStack));
     }
     
     fetchData(); // Tetap panggil fetchData untuk sinkronisasi data terbaru
@@ -423,9 +457,19 @@ export default function FullWidthTabs() {
           <TabPanel value={value} index={2} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden pb-[5%]">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 lg:gap-8 gap-5">
+                {techStackLoading && techStacks.length === 0 && (
+                  <div className="col-span-full text-center py-10">
+                    <p className="text-gray-400 text-lg">Loading tech stack...</p>
+                  </div>
+                )}
+                {!techStackLoading && techStacks.length === 0 && (
+                  <div className="col-span-full text-center py-10">
+                    <p className="text-gray-400 text-lg">No tech stack items yet</p>
+                  </div>
+                )}
                 {techStacks.map((stack, index) => (
                   <div
-                    key={index}
+                    key={`${stack.language}-${index}`}
                     data-aos={index % 3 === 0 ? "fade-up-right" : index % 3 === 1 ? "fade-up" : "fade-up-left"}
                     data-aos-duration={index % 3 === 0 ? "1000" : index % 3 === 1 ? "1200" : "1000"}
                   >

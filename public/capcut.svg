@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <rect width="512" height="512" rx="100" fill="#000000"/>
-  <circle cx="256" cy="256" r="140" fill="#fff"/>
-  <circle cx="256" cy="256" r="100" fill="#000"/>
-  <path d="M256 180v152l80-76z" fill="#fff"/>
+  <rect width="512" height="512" rx="100" fill="#0B0B0B"/>
+  <rect x="128" y="226" width="256" height="60" rx="30" fill="#FFFFFF" transform="rotate(45 256 256)"/>
+  <rect x="128" y="226" width="256" height="60" rx="30" fill="#FFFFFF" transform="rotate(-45 256 256)"/>
 </svg>
