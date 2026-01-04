@@ -48,13 +48,13 @@ const BackgroundEffect = () => (
 );
 
 const IconButton = ({ Icon, label, delay }) => (
-  <div className="relative group animate-float" style={{ animationDelay: delay }}>
-    <div className="absolute -inset-1 bg-gradient-to-r from-red-600/30 to-rose-600/30 rounded-lg sm:rounded-2xl blur opacity-0 group-hover:opacity-70 transition duration-300" />
-    <div className="relative flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-2xl bg-[#0f0014]/70 border border-white/10 backdrop-blur-sm">
-      <span className="flex h-5 sm:h-7 w-5 sm:w-7 items-center justify-center rounded-full bg-rose-500/20 flex-shrink-0">
-        <Icon className="w-3 sm:w-4 h-3 sm:h-4 text-rose-200" />
+  <div className="relative group animate-float flex-shrink-0" style={{ animationDelay: delay }}>
+    <div className="absolute -inset-1 bg-gradient-to-r from-red-600/30 to-rose-600/30 rounded-lg sm:rounded-xl blur opacity-0 group-hover:opacity-70 transition duration-300" />
+    <div className="relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-[#0f0014]/70 border border-white/10 backdrop-blur-sm whitespace-nowrap">
+      <span className="flex h-4 sm:h-5 w-4 sm:w-5 items-center justify-center rounded-full bg-rose-500/20 flex-shrink-0">
+        <Icon className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-rose-200" />
       </span>
-      <span className="text-[0.5rem] sm:text-[0.65rem] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-gray-300">{label}</span>
+      <span className="text-[0.45rem] sm:text-[0.55rem] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-300">{label}</span>
     </div>
   </div>
 );
@@ -172,13 +172,13 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
                       </div>
                     </motion.div>
 
-                    <motion.div className="flex flex-wrap gap-2 sm:gap-3" variants={childVariants}>
+                    <motion.div className="flex gap-2 sm:gap-2.5 items-center" variants={childVariants}>
                       {[
                         { Icon: Code2, label: "Code" },
                         { Icon: User, label: "Profile" },
                         { Icon: Github, label: "Source" }
                       ].map((item, index) => (
-                        <div key={item.label} data-aos="fade-down" data-aos-delay={index * 150}>
+                        <div key={item.label} data-aos="fade-down" data-aos-delay={index * 150} className="flex-shrink-0">
                           <IconButton Icon={item.Icon} label={item.label} delay={`${index * 0.6}s`} />
                         </div>
                       ))}
