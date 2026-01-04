@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Share2, User, Mail, MessageSquare, Send } from "lucide-react";
+import { Share2, User, Mail, MessageSquare, Send, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import SocialLinks from "../components/SocialLinks";
 import Komentar from "../components/Commentar";
@@ -15,6 +15,10 @@ const ContactPage = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactMethod, setContactMethod] = useState("email"); // "email" atau "whatsapp"
+  
+  // Ambil nomor WhatsApp dari .env, jika tidak ada gunakan default
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "62";
 
   useEffect(() => {
     AOS.init({
@@ -32,6 +36,12 @@ const ContactPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (contactMethod === "whatsapp") {
+      handleWhatsAppSubmit();
+      return;
+    }
+    
     setIsSubmitting(true);
 
     Swal.fire({
@@ -107,6 +117,33 @@ const ContactPage = () => {
     }
   };
 
+  const handleWhatsAppSubmit = () => {
+    if (!formData.name || !formData.email || !formData.message) {
+      Swal.fire({
+        title: 'Validasi!',
+        text: 'Semua field harus diisi terlebih dahulu.',
+        icon: 'warning',
+        confirmButtonColor: '#dc2626'
+      });
+      return;
+    }
+
+    // Format pesan untuk WhatsApp
+    const message = `Halo, nama saya ${formData.name}.\n\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`;
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Buka WhatsApp dengan nomor dan pesan yang sudah di-encode
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+    
+    // Reset form
+    setFormData({
+      name: "",
+      email: "",
+      message: "",
+    });
+  };
+
   return (
     <div className="px-[5%] sm:px-[5%] lg:px-[10%] " >
       <div className="text-center lg:mt-[5%] mt-10 mb-2 sm:px-0 px-[5%]">
@@ -156,6 +193,34 @@ const ContactPage = () => {
                 </p>
               </div>
               <Share2 className="w-10 h-10 text-[#dc2626] opacity-50" />
+            </div>
+
+            {/* Toggle antara Email dan WhatsApp */}
+            <div className="mb-8 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setContactMethod("email")}
+                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                  contactMethod === "email"
+                    ? "bg-gradient-to-r from-[#dc2626] to-[#f43f5e] text-white shadow-lg shadow-[#dc2626]/20"
+                    : "bg-white/10 text-gray-400 border border-white/20 hover:border-[#dc2626]/30"
+                }`}
+              >
+                <Mail className="w-4 h-4" />
+                Email
+              </button>
+              <button
+                type="button"
+                onClick={() => setContactMethod("whatsapp")}
+                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                  contactMethod === "whatsapp"
+                    ? "bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg shadow-green-600/20"
+                    : "bg-white/10 text-gray-400 border border-white/20 hover:border-green-600/30"
+                }`}
+              >
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp
+              </button>
             </div>
 
             <form 
@@ -217,10 +282,23 @@ const ContactPage = () => {
                 data-aos-delay="400"
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#dc2626] to-[#f43f5e] text-white py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#dc2626]/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className={`w-full text-white py-4 rounded-xl font-semibold transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${
+                  contactMethod === "whatsapp"
+                    ? "bg-gradient-to-r from-green-600 to-green-500 hover:scale-[1.02] hover:shadow-lg hover:shadow-green-600/20"
+                    : "bg-gradient-to-r from-[#dc2626] to-[#f43f5e] hover:scale-[1.02] hover:shadow-lg hover:shadow-[#dc2626]/20"
+                }`}
               >
-                <Send className="w-5 h-5" />
-                {isSubmitting ? 'Mengirim...' : 'Kirim Pesan'}
+                {contactMethod === "whatsapp" ? (
+                  <>
+                    <MessageCircle className="w-5 h-5" />
+                    {isSubmitting ? 'Membuka WhatsApp...' : 'Kirim via WhatsApp'}
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    {isSubmitting ? 'Mengirim...' : 'Kirim Pesan'}
+                  </>
+                )}
               </button>
             </form>
 
