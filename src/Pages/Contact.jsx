@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Share2, User, Mail, MessageSquare, Send, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import SocialLinks from "../components/SocialLinks";
@@ -9,11 +9,7 @@ import "aos/dist/aos.css";
 import emailjs from "@emailjs/browser";
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const form = useRef();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contactMethod, setContactMethod] = useState("email"); // "email" atau "whatsapp"
   
@@ -25,19 +21,17 @@ const ContactPage = () => {
     emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    AOS.init({
+      once: false,
+    });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (contactMethod === "whatsapp") {
-      handleWhatsAppSubmit();
+      handleWhatsAppSubmit(e);
       return;
     }
     
@@ -53,38 +47,23 @@ const ContactPage = () => {
     });
 
     try {
-      // Persiapan template parameter untuk EmailJS
-      const templateParams = {
-        to_email: "ekizulfarrachman@gmail.com",
-        from_name: formData.name,
-        from_email: formData.email,
-        message: formData.message,
-        subject: "Pesan Baru dari Website Portfolio"
-      };
-
       // Kirim email menggunakan EmailJS
-      const response = await emailjs.send(
+      await emailjs.sendForm(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        templateParams
+        form.current
       );
 
-      if (response.status === 200) {
-        Swal.fire({
-          title: 'Berhasil!',
-          text: 'Pesan Anda telah berhasil terkirim!',
-          icon: 'success',
-          confirmButtonColor: '#dc2626',
-          timer: 2000,
-          timerProgressBar: true
-        });
+      Swal.fire({
+        title: 'Berhasil!',
+        text: 'Pesan Anda telah berhasil terkirim!',
+        icon: 'success',
+        confirmButtonColor: '#dc2626',
+        timer: 2000,
+        timerProgressBar: true
+      });
 
-        setFormData({
-          name: "",
-          email: "",
-          message: "",
-        });
-      }
+      form.current.reset();
     } catch (error) {
       console.error('Error sending email:', error);
       Swal.fire({
@@ -98,8 +77,13 @@ const ContactPage = () => {
     }
   };
 
-  const handleWhatsAppSubmit = () => {
-    if (!formData.name || !formData.email || !formData.message) {
+  const handleWhatsAppSubmit = (e) => {
+    const formData = new FormData(form.current);
+    const name = formData.get('user_name');
+    const email = formData.get('user_email');
+    const message = formData.get('message');
+
+    if (!name || !email || !message) {
       Swal.fire({
         title: 'Validasi!',
         text: 'Semua field harus diisi terlebih dahulu.',
@@ -109,20 +93,15 @@ const ContactPage = () => {
       return;
     }
 
-    // Format pesan untuk WhatsApp
-    const message = `Halo, nama saya ${formData.name}.\n\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`;
-    const encodedMessage = encodeURIComponent(message);
+    // Format pesan untuk WhatsApp dengan encoding URL
+    const waMessage = `Halo Fazri, saya ${name}.%0A%0AEmail: ${email}%0A%0APesan:%0A${message}`;
     
     // Buka WhatsApp dengan nomor dan pesan yang sudah di-encode
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
     window.open(whatsappUrl, '_blank');
     
     // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      message: "",
-    });
+    form.current.reset();
   };
 
   return (
@@ -205,6 +184,7 @@ const ContactPage = () => {
             </div>
 
             <form 
+              ref={form}
               onSubmit={handleSubmit}
               className="space-y-6"
             >
@@ -216,10 +196,8 @@ const ContactPage = () => {
                 <User className="absolute left-4 top-4 w-5 h-5 text-gray-400 group-focus-within:text-[#dc2626] transition-colors" />
                 <input
                   type="text"
-                  name="name"
+                  name="user_name"
                   placeholder="Nama Anda"
-                  value={formData.name}
-                  onChange={handleChange}
                   disabled={isSubmitting}
                   className="w-full p-4 pl-12 bg-white/10 rounded-xl border border-white/20 placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-[#dc2626]/30 transition-all duration-300 hover:border-[#dc2626]/30 disabled:opacity-50"
                   required
@@ -233,10 +211,8 @@ const ContactPage = () => {
                 <Mail className="absolute left-4 top-4 w-5 h-5 text-gray-400 group-focus-within:text-[#dc2626] transition-colors" />
                 <input
                   type="email"
-                  name="email"
+                  name="user_email"
                   placeholder="Email Anda"
-                  value={formData.email}
-                  onChange={handleChange}
                   disabled={isSubmitting}
                   className="w-full p-4 pl-12 bg-white/10 rounded-xl border border-white/20 placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-[#dc2626]/30 transition-all duration-300 hover:border-[#dc2626]/30 disabled:opacity-50"
                   required
@@ -251,8 +227,6 @@ const ContactPage = () => {
                 <textarea
                   name="message"
                   placeholder="Pesan Anda"
-                  value={formData.message}
-                  onChange={handleChange}
                   disabled={isSubmitting}
                   className="w-full resize-none p-4 pl-12 bg-white/10 rounded-xl border border-white/20 placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-[#dc2626]/30 transition-all duration-300 hover:border-[#dc2626]/30 h-[9.9rem] disabled:opacity-50"
                   required
