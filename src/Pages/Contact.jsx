@@ -6,7 +6,7 @@ import Komentar from "../components/Commentar";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axios from "axios";
+import emailjs from "@emailjs/browser";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -20,10 +20,9 @@ const ContactPage = () => {
   // Ambil nomor WhatsApp dari .env, jika tidak ada gunakan default
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "62";
 
+  // Inisialisasi EmailJS
   useEffect(() => {
-    AOS.init({
-      once: false,
-    });
+    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
   }, []);
 
   const handleChange = (e) => {
@@ -54,42 +53,23 @@ const ContactPage = () => {
     });
 
     try {
-      // Ganti dengan email Anda di FormSubmit
-      const formSubmitUrl = 'https://formsubmit.co/ekizulfarrachman@gmail.com';
-      
-      // Siapkan data form untuk FormSubmit
-      const submitData = new FormData();
-      submitData.append('name', formData.name);
-      submitData.append('email', formData.email);
-      submitData.append('message', formData.message);
-      submitData.append('_subject', 'Pesan Baru dari Website Portfolio');
-      submitData.append('_captcha', 'false'); // Nonaktifkan captcha
-      submitData.append('_template', 'table'); // Format email sebagai tabel
+      // Persiapan template parameter untuk EmailJS
+      const templateParams = {
+        to_email: "ekizulfarrachman@gmail.com",
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        subject: "Pesan Baru dari Website Portfolio"
+      };
 
-      await axios.post(formSubmitUrl, submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Kirim email menggunakan EmailJS
+      const response = await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        templateParams
+      );
 
-     
-      Swal.fire({
-        title: 'Berhasil!',
-        text: 'Pesan Anda telah berhasil terkirim!',
-        icon: 'success',
-        confirmButtonColor: '#dc2626',
-        timer: 2000,
-        timerProgressBar: true
-      });
-
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
-
-    } catch (error) {
-      if (error.request && error.request.status === 0) {
+      if (response.status === 200) {
         Swal.fire({
           title: 'Berhasil!',
           text: 'Pesan Anda telah berhasil terkirim!',
@@ -104,14 +84,15 @@ const ContactPage = () => {
           email: "",
           message: "",
         });
-      } else {
-        Swal.fire({
-          title: 'Gagal!',
-          text: 'Terjadi kesalahan. Silakan coba lagi nanti.',
-          icon: 'error',
-          confirmButtonColor: '#dc2626'
-        });
       }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      Swal.fire({
+        title: 'Gagal!',
+        text: 'Terjadi kesalahan. Silakan coba lagi nanti.',
+        icon: 'error',
+        confirmButtonColor: '#dc2626'
+      });
     } finally {
       setIsSubmitting(false);
     }
