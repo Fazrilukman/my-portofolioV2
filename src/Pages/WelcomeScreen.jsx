@@ -61,7 +61,7 @@ const IconButton = ({ Icon, label, delay }) => (
 
 const WelcomeScreen = ({ onLoadingComplete }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const typewriterText = "www.fazrilukman.my.id";
+  const typewriterText = "www.fazrilukman.id";
   const typewriterSpeed = 120;
   const loadingDuration = Math.max(2000, typewriterText.length * typewriterSpeed + 800);
 
@@ -186,7 +186,7 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
 
                     <motion.div variants={childVariants} data-aos="fade-up" data-aos-delay="900">
                       <a
-                        href="https://www.fazrilukman.my.id"
+                        href="https://www.fazrilukman.id"
                         className="inline-flex items-center gap-2 sm:gap-3 rounded-full border border-white/10 bg-white/5 px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-xs sm:text-sm md:text-base text-gray-300 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
                         target="_blank"
                         rel="noopener noreferrer"
